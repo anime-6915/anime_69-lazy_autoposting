@@ -11,7 +11,7 @@
     Features:
 </h3>
 <p>
-    - detection and proper handling of post links on Twitter and Pixiv (must be singular image / script will send only first image. haven’t tested)<br>
+    - detection and proper handling of post links on Twitter and Pixiv (must be singular image/script will send only first image. haven’t tested)<br>
     - caption generating with link to an original post and text in “my” style (keysmash)<br>
     - scheduling posts with semi-randomly generated interval<br>
     - will be expanded
