@@ -1,10 +1,13 @@
 # Telegram
-API_ID = "your telegram api goes here"
-API_HASH = "your telegram hash goes here"
+TELEGRAM_API_ID = "your telegram api goes here"
+TELEGRAM_API_HASH = "your telegram hash goes here"
 BOT_TOKEN = "your telegram bot token goes here"
 PHONE_NUMBER = "+your  phone number goes here"
 ADMIN_CHAT_ID = "id of an owners chat with bot goes here"
 
+# Gelbooru
+GELBOORU_API_KEY = "gelbooru api key goes here"
+GELBOORU_USER_ID = "gelbooru user id goes here"
 
 TARGET_CHANNEL = "target channel id/link goes here"
 SOURCE_CHANNEL = "intermediate channel id/link goes here"

@@ -13,9 +13,10 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO )
 
-app = Client("anime_69", api_id=cfg.API_ID, api_hash=cfg.API_HASH)
+app = Client("anime_69", api_id=cfg.TELEGRAM_API_ID, api_hash=cfg.TELEGRAM_API_HASH)
 
 #SETTINGS BLOCK
+SourceChannel = cfg.SOURCE_CHANNEL
 TargetChannel = cfg.TARGET_CHANNEL
 LinkDump = cfg.LINKS_DUMP_CHAT
 TwitterBot = cfg.TWITTER_LINKS_BOT
@@ -23,7 +24,7 @@ PixivBot = cfg.PIXIV_LINKS_BOT
 
 # TIME BLOCK
 CurrentTime = (datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y' ))
-PlannedTime = datetime.now() + timedelta(hours=5)
+# PlannedTime = datetime.now() + timedelta(hours=5)
 PlndIntTime = datetime.timestamp(PlannedTime)
 OutputTime = datetime.strftime(PlannedTime, '%A %H:%M %d.%m.%y' )
 

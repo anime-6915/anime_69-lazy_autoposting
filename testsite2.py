@@ -7,6 +7,9 @@ from pyrogram import Client, filters
 from pyrogram.handlers import MessageHandler
 import config as cfg
 import logging
+import asyncio
+from python_gelbooru import AsyncGelbooru
+import pandas
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -25,7 +28,9 @@ PlannedTime = datetime.now() + timedelta(hours=5)
 PlndIntTime = datetime.timestamp(PlannedTime)
 OutputTime = datetime.strftime(PlannedTime, '%A %H:%M %d.%m.%y' )
 
-app = Client("anime_69", api_id=cfg.API_ID, api_hash=cfg.API_HASH)
+app = Client("anime_69", api_id=cfg.TELEGRAM_API_ID, api_hash=cfg.TELEGRAM_API_HASH)
+
+
 
 print(datetime.now())
 
