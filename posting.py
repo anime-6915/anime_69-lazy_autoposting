@@ -29,8 +29,8 @@ TwitterBot = cfg.TWITTER_LINKS_BOT
 PixivBot = cfg.PIXIV_LINKS_BOT
 
 # TIME BLOCK
-CurrentTime = (datetime.strftime(datetime.send_now(), '%H:%M:%S  %d.%m.%y' ))
-PlannedTime = datetime.send_now()
+CurrentTime = (datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y' ))
+PlannedTime = datetime.now()
 OutputTime = datetime.strftime(PlannedTime, '%A %H:%M %d.%m.%y' )
 
 # print(f'Програма запущена та готова до роботи | {CurrentTime}')
@@ -38,17 +38,17 @@ OutputTime = datetime.strftime(PlannedTime, '%A %H:%M %d.%m.%y' )
 try_to_post = 'Спроба створити пост у відложці'
 def print_success(source = None, target = None, action = None):
     if source == SourceChannel:
-        print('Отримано пост з відложки |', (datetime.strftime(datetime.send_now(), '%H:%M:%S  %d.%m.%y' )))
+        print('Отримано пост з відложки |', (datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y' )))
     elif source != None and target == None:
-        print(f'> Отримано посилання на {source} |', (datetime.strftime(datetime.send_now(), '%H:%M:%S  %d.%m.%y' )))
+        print(f'> Отримано посилання на {source} |', (datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y' )))
     elif target == SourceChannel:
-        print(f'Пост обработано та надіслано в відложку успішно |', (datetime.strftime(datetime.send_now(), '%H:%M:%S  %d.%m.%y' )))
+        print(f'Пост обработано та надіслано в відложку успішно |', (datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y' )))
     elif target != None and target != SourceChannel:
-        print (f'Надіслано в {target} успішно |', (datetime.strftime(datetime.send_now(), '%H:%M:%S  %d.%m.%y' )))
+        print (f'Надіслано в {target} успішно |', (datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y' )))
     elif target == TargetChannel:
         print(f'Пост було заплановано на {OutputTime} успішно!!!! ^w^')
     else:
-        print(f'{action} Виконано успішно |', (datetime.strftime(datetime.send_now(), '%H:%M:%S  %d.%m.%y' )), (target), (source))
+        print(f'{action} Виконано успішно |', (datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y' )), (target), (source))
 
 def generate_caption(url):
     def generate_random_string(length):
@@ -110,7 +110,7 @@ def generate_time (filename="latest.json", mode="r", send_now=None):
 # URL DETECTION AND HANDLING BLOCK
 async def twi_detection(client, message):
     print_success(source='Twitter', action='oбнаруженіе поста')
-    # print(f'message id: {message.id} time: {datetime.send_now()}')
+    # print(f'message id: {message.id} time: {datetime.now()}')
     await app.forward_messages(
         chat_id=TwitterBot,
         from_chat_id = LinkDump,
