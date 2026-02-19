@@ -5,13 +5,12 @@
     this is a userbot/script for automatic posting of images via “send later” telegram functionality.
 </h4>
 <p style="text-align:center;">
-    &nbsp;
 </p>
 <h3>
     Features:
 </h3>
 <p>
-    - detection and proper handling of post links on Twitter and Pixiv (must be singular image/script will send only first image. haven’t tested)<br>
+    - detection and proper handling of post links on Twitter, Pixiv and Gelbooru (must be singular image/script will send only first image. haven’t tested)<br>
     - caption generating with link to an original post and text in “my” style (keysmash)<br>
     - scheduling posts with semi-randomly generated interval<br>
     - will be expanded
@@ -26,6 +25,6 @@
     - rename config_safe.py to config.py<br>
     - setup script by putting in needed channels/chats IDs in config.py<br>
     - launch the script<br>
-    - send twitter or pixiv links in the chat that you set up as “LinkDump”<br>
+    - send your links in the chat that you set up as “LinkDump”<br>
     - wait a bit and voila! arts/pictures that you wanted to post will be posted on generated time<br>
  </p>
