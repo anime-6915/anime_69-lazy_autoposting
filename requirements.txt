@@ -1,4 +1,3 @@
 kurigram
 tgcrypto
 Python-Gelbooru
-pandas

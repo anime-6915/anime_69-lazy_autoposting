@@ -9,7 +9,8 @@ import config as cfg
 import logging
 import asyncio
 from python_gelbooru import AsyncGelbooru
-import pandas
+import re
+import aiohttp
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -30,9 +31,34 @@ OutputTime = datetime.strftime(PlannedTime, '%A %H:%M %d.%m.%y' )
 
 app = Client("anime_69", api_id=cfg.TELEGRAM_API_ID, api_hash=cfg.TELEGRAM_API_HASH)
 
+ididid = re.search(r'\d{1,}',
+                    r'https://gelbooru.com/index.php?page=post&s=view&id=13500674&tags=umamusume+rating%3Ageneral')
+print(ididid[0] if ididid else "couldn't find post id")
 
+async def gel_detection(client, message):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+    print("message detected")
+    async with aiohttp.ClientSession(headers=headers) as custom_session:
+        async with AsyncGelbooru(api_key=cfg.GELBOORU_API_KEY,
+                                 user_id=cfg.GELBOORU_USER_ID) as gel:
+            posts = await gel.get_post(post_id=ididid[0])
 
+            if posts:
+                post = posts  # Get the first (and likely only) post from the tuple
+                print(f"Found post {post.id}! Downloading...")
+
+                # 2. Download the post
+                # The library automatically adds the correct file extension (e.g., .png or .jpg)
+                # Make sure the target directory (e.g., './arts/') exists!
+                await post.async_download(f"./arts/{post.id}", session=custom_session)
+
+                print("Download complete!")
+            else:
+                print(f"Could not find a post with ID {target_id}.")
 print(datetime.now())
 
+app.add_handler(MessageHandler(gel_detection, filters.chat(LinkDump) & filters.regex("gelbooru.com")))
 app.run()
 
