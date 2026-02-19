@@ -32,6 +32,26 @@ OutputTime = datetime.strftime(PlannedTime, '%A %H:%M %d.%m.%y' )
 app = Client("anime_69", api_id=cfg.TELEGRAM_API_ID, api_hash=cfg.TELEGRAM_API_HASH)
 
 
+async def pix_detection(client, message):
+    print_success(source='Pixiv', action='oбнаруженіе поста')
+    await app.forward_messages(
+        chat_id=PixivBot,
+        from_chat_id=LinkDump,
+        message_ids=message.id, )
+    print_success(target='Pixiv_Bot')
+    await message.reply(text="`❕ — ПОСТ ОТРИМАНО, ЗАЧЕКАЙ`")
+    generate_time()
+    sleep(4)
+    await app.copy_message(
+        chat_id=TargetChannel,
+        from_chat_id=PixivBot,
+        message_id=message.id + 3,
+        caption=generate_caption(message.text),
+        schedule_date=PlannedTime, )
+    await app.edit_message_text(chat_id=LinkDump, message_id=message.id + 2, text=f"`✅ — УСПІШНО ЗАПЛАНОВАНО НА {OutputTime}`")
+    print_success(target=TargetChannel)
+
+
 
 async def gel_detection(client, message):
     headers = {
