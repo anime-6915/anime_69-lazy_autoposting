@@ -1,13 +1,18 @@
+from pyrogram.handlers import MessageHandler
+from pyrogram import Client, filters
+from python_gelbooru import AsyncGelbooru
+
 from datetime import datetime, timedelta
 from time import sleep
+
+import aiohttp
 import random
 import string
-from pyrogram import Client, filters
-from pyrogram.handlers import MessageHandler
-import config as cfg
-# don't forget change config_safe.py of you are copying this code
 import logging
 import json
+import re
+
+import config as cfg # don't forget to rename config_safe.py
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -24,8 +29,7 @@ PixivBot = cfg.PIXIV_LINKS_BOT
 
 # TIME BLOCK
 CurrentTime = (datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y' ))
-# PlannedTime = datetime.now() + timedelta(hours=5)
-PlndIntTime = datetime.timestamp(PlannedTime)
+PlannedTime = datetime.now()
 OutputTime = datetime.strftime(PlannedTime, '%A %H:%M %d.%m.%y' )
 
 # print(f'Програма запущена та готова до роботи | {CurrentTime}')
@@ -123,7 +127,6 @@ async def twi_detection(client, message):
 
 async def pix_detection(client, message):
     print_success(source='Pixiv', action='oбнаруженіе поста')
-    print(f'message id: {message.id} {datetime.now()}')
     await app.forward_messages(
         chat_id=PixivBot,
         from_chat_id=LinkDump,
@@ -131,7 +134,7 @@ async def pix_detection(client, message):
     print_success(target='Pixiv_Bot')
     await message.reply(text="`❕ — ПОСТ ОТРИМАНО, ЗАЧЕКАЙ`")
     generate_time()
-    sleep(3)
+    sleep(4)
     await app.copy_message(
         chat_id=TargetChannel,
         from_chat_id=PixivBot,
@@ -141,8 +144,27 @@ async def pix_detection(client, message):
     await app.edit_message_text(chat_id=LinkDump, message_id=message.id + 2, text=f"`✅ — УСПІШНО ЗАПЛАНОВАНО НА {OutputTime}`")
     print_success(target=TargetChannel)
 
-def gel_detection(client, message):
+async def gel_detection(client, message):
     print_success(source='Gelbooru')
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Referer": "https://gelbooru.com/"
+    }
+    link_id = re.search(r'\d{1,}', string = message.text)
+    async with aiohttp.ClientSession(headers=headers) as custom_session:
+        async with AsyncGelbooru(api_key=cfg.GELBOORU_API_KEY,
+                                 user_id=cfg.GELBOORU_USER_ID) as gel:
+            post = await gel.get_post(post_id=link_id[0])
+
+            if post:
+                print(f"Пост #{post.id} знайдено! Завантаження...")
+                await post.async_download(f"./arts/{post.id}", session=custom_session)
+
+                print("Завантажено!")
+            else:
+                print(f"Помилка! Пост з ID:{post.id} не знайден! Як ти цього взагалі добився? В Gelbooru ID йдуть з 1 до нескінченності!")
+
+
 
 app.add_handler(MessageHandler(twi_detection, filters.chat(LinkDump) & filters.regex("x.com")))
 app.add_handler(MessageHandler(pix_detection, filters.chat(LinkDump) & filters.regex("pixiv.net")))
