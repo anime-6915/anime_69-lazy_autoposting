@@ -30,8 +30,8 @@ PixivBot = cfg.PIXIV_LINKS_BOT
 
 # TIME BLOCK
 CurrentTime = (datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y' ))
-PlannedTime = datetime.now()
-OutputTime = datetime.strftime(PlannedTime, '%A %H:%M %d.%m.%y' )
+PlannedTime = 0
+OutputTime = 0
 
 # print(f'Програма запущена та готова до роботи | {CurrentTime}')
 
@@ -69,8 +69,10 @@ def generate_time (filename="latest.json", mode="r", send_now=None):
             new_hrs = random.choice(hrs_lst)
             new_min = random.randint(7, 30)
             global PlannedTime
+            global OutputTime
             # генерація нового часу, з випадковим проміжком на основі часу який був взятий з .json файлу
             PlannedTime = datetime.strptime(time_check["time"], '%Y-%m-%d %H:%M:%S.%f') + timedelta(hours=new_hrs, minutes=new_min)
+            OutputTime = datetime.strftime(PlannedTime, '%A %H:%M %d.%m.%y')
             # конвертація формату часу для рандомного багу
             unmatched_fix = datetime.strptime(time_check["time"], '%Y-%m-%d %H:%M:%S.%f')
             # конвертація часу для використання в "зміні дня"

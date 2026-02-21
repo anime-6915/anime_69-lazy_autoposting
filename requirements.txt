@@ -1,3 +1,4 @@
 kurigram
+pyrogram
 tgcrypto
 Python-Gelbooru
