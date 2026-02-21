@@ -72,7 +72,6 @@ def generate_time (filename="latest.json", mode="r", send_now=None):
             global OutputTime
             # генерація нового часу, з випадковим проміжком на основі часу який був взятий з .json файлу
             PlannedTime = datetime.strptime(time_check["time"], '%Y-%m-%d %H:%M:%S.%f') + timedelta(hours=new_hrs, minutes=new_min)
-            OutputTime = datetime.strftime(PlannedTime, '%A %H:%M %d.%m.%y')
             # конвертація формату часу для рандомного багу
             unmatched_fix = datetime.strptime(time_check["time"], '%Y-%m-%d %H:%M:%S.%f')
             # конвертація часу для використання в "зміні дня"
@@ -92,6 +91,7 @@ def generate_time (filename="latest.json", mode="r", send_now=None):
                 else:
                     latest_time = PlannedTime
             # генерація та запис .json файлу
+            OutputTime = datetime.strftime(PlannedTime, '%A %H:%M %d.%m.%y')
             latest_post_hour = datetime.strftime(PlannedTime, format ='%H')
             latest_post_minute = datetime.strftime(PlannedTime, format = '%M')
             latest_post_day = datetime.strftime(PlannedTime, format = '%d')
