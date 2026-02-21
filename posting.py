@@ -140,7 +140,7 @@ async def pix_detection(client, message):
     print_success(target='Pixiv_Bot')
     await message.reply(text="`❕ — ПОСТ ОТРИМАНО, ЗАЧЕКАЙ`")
     generate_time(send_now=False)
-    sleep(4)
+    sleep(5)
     await app.copy_message(
         chat_id=TargetChannel,
         from_chat_id=PixivBot,
