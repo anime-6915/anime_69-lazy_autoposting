@@ -120,7 +120,7 @@ async def twi_detection(client, message):
     print_success(target='Twitter_Bot')
     await message.reply(text="`❕ — ПОСТ ОТРИМАНО, ЗАЧЕКАЙ`")
     generate_time(send_now=False)
-    sleep(2)
+    sleep(5)
     await app.copy_message(
         chat_id=TargetChannel,
         from_chat_id=TwitterBot,
