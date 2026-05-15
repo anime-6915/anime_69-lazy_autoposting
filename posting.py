@@ -1,5 +1,5 @@
-from pyrogram.handlers import MessageHandler
 from pyrogram import Client, filters
+from pyrogram.handlers import MessageHandler
 from python_gelbooru import AsyncGelbooru
 
 from datetime import datetime, timedelta
@@ -140,7 +140,7 @@ async def pix_detection(client, message):
     print_success(target='Pixiv_Bot')
     await message.reply(text="`❕ — ПОСТ ОТРИМАНО, ЗАЧЕКАЙ`")
     generate_time(send_now=False)
-    sleep(5)
+    sleep(10)
     await app.copy_message(
         chat_id=TargetChannel,
         from_chat_id=PixivBot,
