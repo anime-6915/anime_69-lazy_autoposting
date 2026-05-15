@@ -1,4 +1,5 @@
 # Telegram
+USER_ID = "your user id goes here. it is needed so that bot knows where to send the status messages"
 TELEGRAM_API_ID = "your telegram api goes here"
 TELEGRAM_API_HASH = "your telegram hash goes here"
 BOT_TOKEN = "your telegram bot token goes here"
