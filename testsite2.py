@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from time import sleep
 
 import aiohttp
+import asyncio
 import random
 import string
 import logging
@@ -108,6 +109,12 @@ def generate_time (filename="latest.json", mode="r", send_now=None):
     else:
         PlannedTime = None
 
+async def inform(text = str):
+    time = datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y')
+    print(f'{text} | {time}')
+    async with bot:
+        await bot.send_message(cfg.USER_ID, f'{text} | {time}')
+
 
 async def gel_detection(client, message):
     print_success(source='Gelbooru')
@@ -124,27 +131,22 @@ async def gel_detection(client, message):
             post = await gel.get_post(post_id=link_id[0])
 
             if post:
-                print(f"Пост #{post.id} знайдено! Завантаження...")
+                await inform(f"Пост #{post.id} знайдено! Завантаження...")
                 await post.async_download(f"./arts/{post.id}", session=custom_session)
-
-                print("Завантажено!")
+                # Send a message, Markdown is enabled by default
+                await inform("Завантажено!")
                 filepath = glob.glob(f"./arts/{post.id}.*") # setting up filepath to just-downloaded image
-                print(filepath)
+                await inform(filepath)
             else:
-                print(f"Помилка! Пост з ID:{post.id} не знайден! Як ти цього взагалі добився? В Gelbooru ID йдуть з 1 до нескінченності!")
+                await inform(f"Помилка! Пост з ID:{post.id} не знайден! Як ти цього взагалі добився? В Gelbooru ID йдуть з 1 до нескінченності!")
     generate_time(send_now=False)
     await app.send_photo(
         chat_id=TargetChannel,
         photo = filepath[0],
         caption=generate_caption(f'https://gelbooru.com/index.php?page=post&s=view&id={post.id}'),
         schedule_date=PlannedTime, )
-    await app.edit_message_text(chat_id=LinkDump, message_id=message.id + 1,
-                                text=f"`✅ — УСПІШНО ЗАПЛАНОВАНО НА {OutputTime}`")
+    await inform(f"`✅ — УСПІШНО ЗАПЛАНОВАНО НА {OutputTime}`")
     print_success(target=TargetChannel)
-    async with bot:
-        # Send a message, Markdown is enabled by default
-        await bot.send_message(cfg.USER_ID, "ЗІГА ЗАГА")
-
 
 print(datetime.now())
 
