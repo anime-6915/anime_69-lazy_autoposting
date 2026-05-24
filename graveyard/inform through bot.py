@@ -19,36 +19,22 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO )
 
-app = Client("anime_69", api_id=cfg.TELEGRAM_API_ID, api_hash=cfg.TELEGRAM_API_HASH)
-
 #SETTINGS BLOCK
-SourceChannel = cfg.SOURCE_CHANNEL
 TargetChannel = cfg.TARGET_CHANNEL
+SourceChannel = cfg.SOURCE_CHANNEL
 LinkDump = cfg.LINKS_DUMP_CHAT
 TwitterBot = cfg.TWITTER_LINKS_BOT
 PixivBot = cfg.PIXIV_LINKS_BOT
 
 # TIME BLOCK
+# TIME BLOCK
 CurrentTime = (datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y' ))
 PlannedTime = 0
 OutputTime = 0
 
-# print(f'Програма запущена та готова до роботи | {CurrentTime}')
 
-try_to_post = 'Спроба створити пост у відложці'
-def print_success(source = None, target = None, action = None):
-    if source == SourceChannel:
-        print('Отримано пост з відложки |', (datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y' )))
-    elif source != None and target == None:
-        print(f'> Отримано посилання на {source} |', (datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y' )))
-    elif target == SourceChannel:
-        print(f'Пост обработано та надіслано в відложку успішно |', (datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y' )))
-    elif target != None and target != SourceChannel:
-        print (f'Надіслано в {target} успішно |', (datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y' )))
-    elif target == TargetChannel:
-        print(f'Пост було заплановано на {OutputTime} успішно!!!! ^w^')
-    else:
-        print(f'{action} Виконано успішно |', (datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y' )), (target), (source))
+app = Client("anime_69", api_id=cfg.TELEGRAM_API_ID, api_hash=cfg.TELEGRAM_API_HASH)
+bot = Client("bot", bot_token=cfg.BOT_TOKEN)
 
 def generate_caption(url):
     def generate_random_string(length):
@@ -109,16 +95,47 @@ def generate_time (filename="latest.json", mode="r", send_now=None):
     else:
         PlannedTime = None
 
-# URL DETECTION AND HANDLING BLOCK
+async def inform(text = str, send_time = True, source = None, target = None, action = None):
+    time = datetime.strftime(datetime.now(), '%H:%M:%S  %d.%m.%y')
+    if source != None and target == None:
+        print(f'! Отримано посилання на {source} | {time}')
+        async with bot:
+            await bot.send_message(cfg.USER_ID, f'> Отримано посилання на {source} | {time}')
+    elif target == SourceChannel:
+        print(f'Пост обработано та надіслано в відложку успішно | {time}')
+        async with bot:
+            await bot.send_message(cfg.USER_ID, f'> Отримано посилання на {source} | {time}')
+    elif target == TargetChannel:
+        print(f'Пост було заплановано на {OutputTime} успішно!!!! ^w^')
+        async with bot:
+            await bot.send_message(cfg.USER_ID, f'Пост було заплановано на {OutputTime} успішно!!!! ^w^')
+    elif target != None and target != SourceChannel:
+        print (f'Надіслано в {target} успішно | {time}')
+        async with bot:
+            await bot.edit_message_text(chat_id=cfg.USER_ID, message_id=message.id + 2, text=f'Надіслано в {target} успішно  | {time}')
+    elif action != None:
+        print(f'{action} Виконано успішно | {time}', (target), (source))
+        async with bot:
+            await bot.send_message(cfg.USER_ID, f'{action} Виконано успішно | {time}', (target), (source))
+    elif send_time == True:
+        print(f'{text} | {time}')
+        async with bot:
+            await bot.send_message(cfg.USER_ID, f'{text} | {time}')
+    else:
+        print(f'{text}')
+        async with bot:
+            await bot.send_message(cfg.USER_ID, f'{text}')
+
+
 async def twi_detection(client, message):
-    print_success(source='Twitter', action='oбнаруженіе поста')
+    await inform(source='Twitter')
     # print(f'message id: {message.id} time: {datetime.now()}')
     await app.forward_messages(
         chat_id=TwitterBot,
         from_chat_id = LinkDump,
         message_ids = message.id, )
-    print_success(target='Twitter_Bot')
-    await message.reply(text="`❕ — ПОСТ ОТРИМАНО, ЗАЧЕКАЙ`")
+    await inform(target='Twitter_Bot')
+    # await message.reply(text="`❕ — ПОСТ ОТРИМАНО, ЗАЧЕКАЙ`")
     generate_time(send_now=False)
     sleep(5)
     await app.copy_message(
@@ -128,35 +145,16 @@ async def twi_detection(client, message):
         caption=generate_caption(message.text),
         schedule_date=PlannedTime,
     )
-    await app.edit_message_text(chat_id=LinkDump, message_id=message.id + 2, text=f"`✅ — УСПІШНО ЗАПЛАНОВАНО НА {OutputTime}`")
-    print_success(target=TargetChannel)
-
-async def pix_detection(client, message):
-    print_success(source='Pixiv', action='oбнаруженіе поста')
-    await app.forward_messages(
-        chat_id=PixivBot,
-        from_chat_id=LinkDump,
-        message_ids=message.id, )
-    print_success(target='Pixiv_Bot')
-    await message.reply(text="`❕ — ПОСТ ОТРИМАНО, ЗАЧЕКАЙ`")
-    generate_time(send_now=False)
-    sleep(10)
-    await app.copy_message(
-        chat_id=TargetChannel,
-        from_chat_id=PixivBot,
-        message_id=message.id + 3,
-        caption=generate_caption(message.text),
-        schedule_date=PlannedTime, )
-    await app.edit_message_text(chat_id=LinkDump, message_id=message.id + 2, text=f"`✅ — УСПІШНО ЗАПЛАНОВАНО НА {OutputTime}`")
-    print_success(target=TargetChannel)
+    # await inform (text=f"`✅ — УСПІШНО ЗАПЛАНОВАНО НА {OutputTime}`", send_time=False)
+    await inform(target=TargetChannel)
 
 async def gel_detection(client, message):
-    print_success(source='Gelbooru')
+    await inform(source='Gelbooru')
     headers = { # needed to go around gelbooru's CDN protection
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         "Referer": "https://gelbooru.com/"
     }
-    await message.reply(text="`❕ — ПОСТ ОТРИМАНО, ЗАЧЕКАЙ`")
+    await inform("❕ — ПОСТ ОТРИМАНО, ЗАЧЕКАЙ")
     link_id = re.search(r'\d{1,}', string = message.text)
     # downloading
     async with aiohttp.ClientSession(headers=headers) as custom_session:
@@ -165,37 +163,27 @@ async def gel_detection(client, message):
             post = await gel.get_post(post_id=link_id[0])
 
             if post:
-                print(f"Пост #{post.id} знайдено! Завантаження...")
+                await inform(f"Пост #{post.id} знайдено! Завантаження...")
                 await post.async_download(f"./arts/{post.id}", session=custom_session)
-
-                print("Завантажено!")
+                # Send a message, Markdown is enabled by default
+                await inform("Завантажено!")
                 filepath = glob.glob(f"./arts/{post.id}.*") # setting up filepath to just-downloaded image
-                print(filepath)
+                await inform(filepath, False)
             else:
-                print(f"Помилка! Пост з ID:{post.id} не знайден! Як ти цього взагалі добився? В Gelbooru ID йдуть з 1 до нескінченності!")
+                await inform(f"Помилка! Пост з ID:{post.id} не знайден! Як ти цього взагалі добився? В Gelbooru ID йдуть з 1 до нескінченності!")
     generate_time(send_now=False)
     await app.send_photo(
         chat_id=TargetChannel,
         photo = filepath[0],
         caption=generate_caption(f'https://gelbooru.com/index.php?page=post&s=view&id={post.id}'),
         schedule_date=PlannedTime, )
-    await app.edit_message_text(chat_id=LinkDump, message_id=message.id + 1,
-                                text=f"`✅ — УСПІШНО ЗАПЛАНОВАНО НА {OutputTime}`")
-    print_success(target=TargetChannel)
+    await inform(f"✅ — УСПІШНО ЗАПЛАНОВАНО НА {OutputTime}")
+    await inform(target=TargetChannel)
 
+print(datetime.now())
 
 
 app.add_handler(MessageHandler(twi_detection, filters.chat(LinkDump) & filters.regex("x.com")))
-app.add_handler(MessageHandler(pix_detection, filters.chat(LinkDump) & filters.regex("pixiv.net")))
 app.add_handler(MessageHandler(gel_detection, filters.chat(LinkDump) & filters.regex("gelbooru.com")))
-
-# async def test(client, message):
-#   print('test')
-
-# app.add_handler(MessageHandler(test, filters.chat(LinkDump)))
-
-
-#print(f'Програма завершена | {CurrentTime}')
-
-
 app.run()
+bot.run()
