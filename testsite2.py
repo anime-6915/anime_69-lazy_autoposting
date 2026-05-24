@@ -183,7 +183,6 @@ async def gel_detection(client, message):
 print(datetime.now())
 
 
-
 app.add_handler(MessageHandler(twi_detection, filters.chat(LinkDump) & filters.regex("x.com")))
 app.add_handler(MessageHandler(gel_detection, filters.chat(LinkDump) & filters.regex("gelbooru.com")))
 app.run()
